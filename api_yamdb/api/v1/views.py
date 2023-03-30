@@ -1,8 +1,10 @@
 from rest_framework import generics
+from rest_framework import viewsets
 from rest_framework.generics import ListAPIView
-from reviews.models import Category, Genre, Titles
-from .serializers import CategorySerializer, GenreSerializer, TitleSerializer
-from rest_framework.permissions import IsAdminOrReadOnly
+from reviews.models import Category, Genre, Title, Review, Comment, Rating
+from .serializers import CategorySerializer, GenreSerializer, TitleSerializer, ReviewSerializer, CommentSerializer, RatingSerializer, RatingSerializer
+from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
+from rest_framework import permissions
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 
@@ -21,8 +23,22 @@ class GenreViewSet(ListAPIView):
 
 
 class TitleViewSet(generics.ListAPIView):
-    queryset = Titles.objects.all()
+    queryset = Title.objects.all()
     serializer_class = TitleSerializer
     permission_classes = (IsAdminOrReadOnly,)
-
     ###дописать фильтрацию 
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.select_related('title').select_related('author')
+    serializer_class = ReviewSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.select_related('review').select_related('author')
+    serializer_class = CommentSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
+
+class RatingViewSet(viewsets.ModelViewSet):
+    queryset = Rating.objects.select_related('user').select_related('title')
+    serializer_class = RatingSerializer

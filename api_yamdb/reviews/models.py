@@ -34,7 +34,7 @@ class Genre(models.Model):
         return f'{self.name}'
 
 
-class Titles(models.Model):
+class Title(models.Model):
     """Модель Произведения."""
     name = models.CharField(max_length=200)
     year = models.IntegerField(validators=[validate_release_year])
@@ -46,9 +46,24 @@ class Titles(models.Model):
     def __str__(self):
         return f'{self.name}'
 
+class Rating(models.Model):
+    title = models.ForeignKey(Title, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')
+    grade = models.IntegerField()
+
+    class Meta:
+        verbose_name_plural = 'Рейтинги'
+        verbose_name = 'Рейтинг'
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "title"], name="unique_user_title"
+            ),
+        ]
+
 class Review(models.Model):
     title = models.ForeignKey(Title, on_delete=models.CASCADE, related_name='reviews')
     text = models.TextField()
+    score = models.IntegerField()
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
     pub_date = models.DateTimeField(auto_now_add=True)
 
@@ -74,16 +89,3 @@ class Comment(models.Model):
     def __str__(self):
         return self.text
     
-class Rating(models.Model):
-    title = models.ForeignKey(Title, on_delete=models.CASCADE, related_name='ratings')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ratings')
-    grade = models.IntegerField()
-
-    class Meta:
-        verbose_name_plural = 'Рейтинги'
-        verbose_name = 'Рейтинг'
-        constraints = [
-            models.UniqueConstraint(
-                fields=["user", "title"], name="unique_user_title"
-            ),
-        ]

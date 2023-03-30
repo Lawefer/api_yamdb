@@ -13,3 +13,6 @@ class IsAdminOrReadOnly(BasePermission):
             return True
         # Разрешает POST, PATCH или DELETE запросы только администраторам
         return request.user.is_superuser
+
+class IsAuthorOrReadOnly(BasePermission):
+    pass
