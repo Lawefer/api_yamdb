@@ -2,7 +2,11 @@ from rest_framework import generics
 from rest_framework.generics import ListAPIView
 from reviews.models import Category, Genre, Titles
 from .serializers import CategorySerializer, GenreSerializer, TitleSerializer
-from rest_framework.permissions import IsAdminOrReadOnly
+from .permissions import (
+    AdminOnly,
+    IsStafOrReadOnly,
+    IsAdminOrReadOnly
+)
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 
@@ -13,6 +17,7 @@ class CategoryViewSet(generics.ListAPIView):
     permission_classes = (IsAdminOrReadOnly,)
     search_fields = ("name")
 #slug
+
 
 class GenreViewSet(ListAPIView):
     queryset = Genre.objects.all()
@@ -25,4 +30,4 @@ class TitleViewSet(generics.ListAPIView):
     serializer_class = TitleSerializer
     permission_classes = (IsAdminOrReadOnly,)
 
-    ###дописать фильтрацию 
+#дописать фильтрацию
