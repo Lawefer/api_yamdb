@@ -1,23 +1,33 @@
-from rest_framework import generics
-from rest_framework import viewsets
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.mixins import (ListModelMixin,
+                                   CreateModelMixin,
+                                   DestroyModelMixin)
 from rest_framework.generics import ListAPIView
-from reviews.models import Category, Genre, Title, Review, Comment, Rating
-from .serializers import CategorySerializer, GenreSerializer, TitleSerializer, ReviewSerializer, CommentSerializer, RatingSerializer, RatingSerializer
-from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
+from reviews.models import Category, Genre, Title
+from .serializers import (CategorySerializer,
+                          GenreSerializer,
+                          TitleListSerializer,
+                          TitleCreateSerializer)
 from .permissions import (
     AdminOnly,
     IsStafOrReadOnly,
     IsAdminOrReadOnly
 )
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
 
 
-class CategoryViewSet(generics.ListAPIView):
+class ListCreateDestroyViewSet(ListModelMixin,
+                               CreateModelMixin,
+                               DestroyModelMixin,
+                               ):
+    pass
+
+
+class CategoryViewSet(ListCreateDestroyViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = (IsAdminOrReadOnly,)
     search_fields = ("name")
+    lookup_field = 'slug'
 
 
 class GenreViewSet(ListAPIView):
@@ -26,11 +36,15 @@ class GenreViewSet(ListAPIView):
     search_fields = ("name")
 
 
-class TitleViewSet(generics.ListAPIView):
+class TitleViewSet(ModelViewSet):
     queryset = Title.objects.all()
-    serializer_class = TitleSerializer
     permission_classes = (IsAdminOrReadOnly,)
-    ###дописать фильтрацию 
+    filterset_fields = ['category__slug', 'genre__slug', 'name', 'year']
+
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PATCH', 'PUT',):
+            return TitleCreateSerializer
+        return TitleListSerializer
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
