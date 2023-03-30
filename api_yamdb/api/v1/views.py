@@ -8,7 +8,11 @@ from .serializers import (CategorySerializer,
                           GenreSerializer,
                           TitleListSerializer,
                           TitleCreateSerializer)
-from .permissions import IsAdminOrReadOnly
+from .permissions import (
+    AdminOnly,
+    IsStafOrReadOnly,
+    IsAdminOrReadOnly
+)
 
 
 class ListCreateDestroyViewSet(ListModelMixin,
@@ -42,4 +46,3 @@ class TitleViewSet(ModelViewSet):
             return TitleCreateSerializer
         return TitleListSerializer
 
-    ###дописать фильтрацию 
