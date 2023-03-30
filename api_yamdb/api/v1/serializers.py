@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from reviews.models import Titles, Category, Genre
+from reviews.models import Title, Category, Genre, Review, Comment, Rating
 from user.models import User
 
 
@@ -94,3 +94,15 @@ class TitleCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Год выпуска не может быть больше текущего.")
         return year
 
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('review', 'text', 'author', 'pub_date')
+        read_only_fields = ('author', 'pub_date')
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ('text', 'author', 'score', 'pub_date')
+        read_only_fields = ('author', 'pub_date') 

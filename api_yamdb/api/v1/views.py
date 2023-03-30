@@ -46,3 +46,14 @@ class TitleViewSet(ModelViewSet):
             return TitleCreateSerializer
         return TitleListSerializer
 
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.select_related('title').select_related('author')
+    serializer_class = ReviewSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.select_related('review').select_related('author')
+    serializer_class = CommentSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
