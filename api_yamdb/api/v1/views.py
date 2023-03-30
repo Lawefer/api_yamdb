@@ -4,7 +4,11 @@ from rest_framework.generics import ListAPIView
 from reviews.models import Category, Genre, Title, Review, Comment, Rating
 from .serializers import CategorySerializer, GenreSerializer, TitleSerializer, ReviewSerializer, CommentSerializer, RatingSerializer, RatingSerializer
 from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
-from rest_framework import permissions
+from .permissions import (
+    AdminOnly,
+    IsStafOrReadOnly,
+    IsAdminOrReadOnly
+)
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 
@@ -14,7 +18,7 @@ class CategoryViewSet(generics.ListAPIView):
     serializer_class = CategorySerializer
     permission_classes = (IsAdminOrReadOnly,)
     search_fields = ("name")
-#slug
+
 
 class GenreViewSet(ListAPIView):
     queryset = Genre.objects.all()
@@ -28,6 +32,7 @@ class TitleViewSet(generics.ListAPIView):
     permission_classes = (IsAdminOrReadOnly,)
     ###дописать фильтрацию 
 
+
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.select_related('title').select_related('author')
     serializer_class = ReviewSerializer
@@ -38,7 +43,3 @@ class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.select_related('review').select_related('author')
     serializer_class = CommentSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
-
-class RatingViewSet(viewsets.ModelViewSet):
-    queryset = Rating.objects.select_related('user').select_related('title')
-    serializer_class = RatingSerializer
