@@ -17,6 +17,7 @@ class GenreSerializer(serializers.ModelSerializer):
 class TitleSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
     category = serializers.CharField(source='category.name')
+    # добавить средний рейтинг (скрин в дискорде)
 
     class Meta:
         model = Title
@@ -27,12 +28,6 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ('review', 'text', 'author', 'pub_date')
         read_only_fields = ('author', 'pub_date')
-
-class RatingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Rating
-        fields = ('title', 'user', 'grade')
-        read_only_fields = ('user',)
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
