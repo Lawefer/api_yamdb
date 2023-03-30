@@ -1,7 +1,9 @@
 from rest_framework import generics
+from rest_framework import viewsets
 from rest_framework.generics import ListAPIView
-from reviews.models import Category, Genre, Titles
-from .serializers import CategorySerializer, GenreSerializer, TitleSerializer
+from reviews.models import Category, Genre, Title, Review, Comment, Rating
+from .serializers import CategorySerializer, GenreSerializer, TitleSerializer, ReviewSerializer, CommentSerializer, RatingSerializer, RatingSerializer
+from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from .permissions import (
     AdminOnly,
     IsStafOrReadOnly,
@@ -16,7 +18,6 @@ class CategoryViewSet(generics.ListAPIView):
     serializer_class = CategorySerializer
     permission_classes = (IsAdminOrReadOnly,)
     search_fields = ("name")
-#slug
 
 
 class GenreViewSet(ListAPIView):
@@ -26,8 +27,19 @@ class GenreViewSet(ListAPIView):
 
 
 class TitleViewSet(generics.ListAPIView):
-    queryset = Titles.objects.all()
+    queryset = Title.objects.all()
     serializer_class = TitleSerializer
     permission_classes = (IsAdminOrReadOnly,)
+    ###дописать фильтрацию 
 
-#дописать фильтрацию
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.select_related('title').select_related('author')
+    serializer_class = ReviewSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.select_related('review').select_related('author')
+    serializer_class = CommentSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
