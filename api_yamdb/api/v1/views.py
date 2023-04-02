@@ -1,13 +1,13 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework import viewsets
 from rest_framework.mixins import (ListModelMixin,
                                    CreateModelMixin,
                                    DestroyModelMixin)
-from rest_framework.generics import ListAPIView
 from reviews.models import Category, Genre, Title
 from .serializers import (CategorySerializer,
                           GenreSerializer,
                           TitleListSerializer,
                           TitleCreateSerializer)
+from django_filters.rest_framework import DjangoFilterBackend
 from .permissions import (
     AdminOnly,
     IsStafOrReadOnly,
@@ -30,15 +30,16 @@ class CategoryViewSet(ListCreateDestroyViewSet):
     lookup_field = 'slug'
 
 
-class GenreViewSet(ListAPIView):
+class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     search_fields = ("name")
 
 
-class TitleViewSet(ModelViewSet):
+class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     permission_classes = (IsAdminOrReadOnly,)
+    filter_backends = [DjangoFilterBackend]
     filterset_fields = ['category__slug', 'genre__slug', 'name', 'year']
 
     def get_serializer_class(self):
