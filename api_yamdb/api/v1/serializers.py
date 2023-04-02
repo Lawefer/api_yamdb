@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from reviews.models import Title, Category, Genre, Review, Comment, Rating
+from reviews.models import Title, Category, Genre, Review, Comment
 from user.models import User
-
+from datetime import timezone
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -96,13 +96,15 @@ class TitleCreateSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.CharField(source='author.username', read_only=True)
     class Meta:
         model = Comment
-        fields = ('review', 'text', 'author', 'pub_date')
+        fields = ('id', 'text', 'author', 'pub_date')
         read_only_fields = ('author', 'pub_date')
 
 class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.CharField(source='author.username', read_only=True)
     class Meta:
         model = Review
-        fields = ('text', 'author', 'score', 'pub_date')
+        fields = ('id', 'text', 'author', 'score', 'pub_date')
         read_only_fields = ('author', 'pub_date') 

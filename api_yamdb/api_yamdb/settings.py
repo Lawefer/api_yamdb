@@ -27,7 +27,8 @@ INSTALLED_APPS = [
     'django_filters',
     'api.apps.ApiConfig',
     'reviews.apps.ReviewsConfig',
-    'user.apps.UserConfig'
+    'user.apps.UserConfig',
+    'djoser'
 ]
 
 MIDDLEWARE = [
@@ -122,4 +123,4 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-AUTH_USER_MODEL = 'user.models.User'
+AUTH_USER_MODEL = 'user.User'

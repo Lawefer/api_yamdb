@@ -1,13 +1,13 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.mixins import (ListModelMixin,
                                    CreateModelMixin,
                                    DestroyModelMixin)
-from rest_framework.generics import ListAPIView
-from reviews.models import Category, Genre, Title
+from rest_framework.generics import ListAPIView 
+from reviews.models import Category, Genre, Title, Review, Comment
 from .serializers import (CategorySerializer,
                           GenreSerializer,
                           TitleListSerializer,
-                          TitleCreateSerializer)
+                          TitleCreateSerializer, ReviewSerializer, CommentSerializer)
 from .permissions import (
     AdminOnly,
     IsStafOrReadOnly,
@@ -18,7 +18,7 @@ from .permissions import (
 class ListCreateDestroyViewSet(ListModelMixin,
                                CreateModelMixin,
                                DestroyModelMixin,
-                               ):
+                               GenericViewSet):
     pass
 
 
@@ -47,13 +47,13 @@ class TitleViewSet(ModelViewSet):
         return TitleListSerializer
 
 
-class ReviewViewSet(viewsets.ModelViewSet):
+class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.select_related('title').select_related('author')
     serializer_class = ReviewSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
+    permission_classes = (IsStafOrReadOnly,)
 
 
-class CommentViewSet(viewsets.ModelViewSet):
+class CommentViewSet(ModelViewSet):
     queryset = Comment.objects.select_related('review').select_related('author')
     serializer_class = CommentSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly)
+    permission_classes = (IsStafOrReadOnly,)

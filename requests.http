@@ -1,0 +1,44 @@
+GET http://127.0.0.1:8000/api/v1/titles/
+
+###
+
+POST http://127.0.0.1:8000/api/v1/auth/signup/
+Content-Type: application/json
+
+{
+    "email": "test@example.com",
+    "username": "test_user"
+}
+
+###
+
+POST http://127.0.0.1:8000/api/v1/auth/signup/
+Content-Type: application/json
+
+{
+    "email": "kritohanzo@fbi.ac",
+    "username": "kritohanzo",
+}
+
+###
+
+POST http://127.0.0.1:8000/api/v1/titles/
+Content-Type: application/json
+
+{ 
+    "name": "test",
+    "year": 1999,
+    "description": "desc for test",
+    "genre": [
+    "tipo genre"
+    ],
+    "category": "Love story"
+}
+
+###
+
+GET http://127.0.0.1:8000/api/v1/titles/1/reviews/
+
+###
+
+GET http://127.0.0.1:8000/api/v1/titles/1/reviews/1/comments/

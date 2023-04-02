@@ -1,7 +1,12 @@
 from django.db import models
-#from api.v1.serializers import validate_release_year
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from user.models import User
+
+def validate_release_year(year):
+        if year and year > timezone.now().year:
+            raise ValidationError("Год выпуска не может быть больше текущего года.")
+        return year
 
 class Category(models.Model):
     """Модель Категории."""
@@ -35,11 +40,6 @@ class Genre(models.Model):
 
 class Title(models.Model):
     """Модель Произведения."""
-
-    def validate_release_year(year):
-        if year and year > timezone.now().year:
-            raise ValidationError("Год выпуска не может быть больше текущего года.")
-        return year
 
     name = models.CharField(max_length=200)
     year = models.IntegerField(validators=[validate_release_year])
