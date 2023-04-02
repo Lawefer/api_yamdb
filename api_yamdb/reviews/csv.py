@@ -1,13 +1,13 @@
 import os
 import csv
 
-from .models import (Category,
-                     Comment,
-                     Genre,
-                     Review,
-                     Title,
-                     User,
-                     Title_Genre)
+from reviews.models import (Category,
+                            Comment,
+                            Genre,
+                            Review,
+                            Title,
+                            User,
+                            Title_Genre)
                    
 CSV_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'data')
 
