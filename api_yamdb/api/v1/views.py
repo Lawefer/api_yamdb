@@ -1,6 +1,5 @@
 from rest_framework import permissions, status
 from rest_framework.decorators import action
-from rest_framework.generics import ListAPIView
 from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
                                    ListModelMixin,)
 from rest_framework.response import Response
