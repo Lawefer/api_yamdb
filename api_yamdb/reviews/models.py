@@ -1,7 +1,8 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 #from api.v1.serializers import validate_release_year
 from django.utils import timezone
-from django.core.exceptions import ValidationError
+
 
 class Category(models.Model):
     """Модель Категории."""

@@ -1,10 +1,10 @@
 from http import HTTPStatus
 
 import pytest
-from django.db.utils import IntegrityError
-
 from tests.utils import (check_fields, check_pagination, create_reviews,
-                         create_single_review, create_titles)
+                         create_single_review, create_titles,)
+
+from django.db.utils import IntegrityError
 
 
 @pytest.mark.django_db(transaction=True)
