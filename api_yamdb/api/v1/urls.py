@@ -1,14 +1,11 @@
-from django.urls import include, path
 from rest_framework import routers
-from djoser.views import UserViewSet
-from rest_framework_simplejwt.views import TokenObtainPairView
-from .views import (
-    CategoryViewSet,
-    GenreViewSet,
-    TitleViewSet,
-    ReviewViewSet,
-    CommentViewSet,
-)
+
+from django.urls import include, path
+
+from .views import (AuthTokenView, CategoryViewSet, CommentViewSet,
+                    GenreViewSet, ReviewViewSet, TitleViewSet,
+                    UserRegistrationView, UserViewSet,)
+
 
 router_v1 = routers.DefaultRouter()
 
@@ -23,10 +20,11 @@ router_v1.register(
     CommentViewSet,
     basename="comments",
 )
-# router_v1.register(r'auth/signup', UserViewSet, basename='signup')
+router_v1.register('users', UserViewSet, basename="user")
 
 
 urlpatterns = [
-    path("", include(router_v1.urls)),
-    # path('auth/token/', TokenObtainPairView.as_view()),
+    path('', include(router_v1.urls)),
+    path('v1/auth/signup/', UserRegistrationView.as_view(), name="signup"),
+    path('v1/auth/token/', AuthTokenView.as_view(), name="auth"),
 ]
