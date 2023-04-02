@@ -1,6 +1,5 @@
 from rest_framework import permissions, status
 from rest_framework.decorators import action
-from rest_framework.generics import ListAPIView
 from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
                                    ListModelMixin,)
 from rest_framework.response import Response
@@ -102,13 +101,13 @@ class CategoryViewSet(ListCreateDestroyViewSet):
     lookup_field = "slug"
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreViewSet(ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     search_fields = "name"
 
 
-class TitleViewSet(viewsets.ModelViewSet):
+class TitleViewSet(ModelViewSet):
     queryset = Title.objects.all()
     permission_classes = (IsAdminOrReadOnly,)
     filter_backends = [DjangoFilterBackend]

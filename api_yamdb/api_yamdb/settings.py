@@ -1,3 +1,4 @@
+import os
 import datetime
 import string
 from pathlib import Path
@@ -17,6 +18,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'django_extensions',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -113,6 +115,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
+CSV_FILES_DIR = os.path.join(BASE_DIR, 'static/data')
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
