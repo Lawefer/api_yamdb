@@ -8,8 +8,11 @@ from reviews.models import (Category,
                             Title,
                             User,
                             Title_Genre)
-                   
-CSV_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'data')
+
+
+CSV_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), 'static', 'data'
+)
 
 CSV_DB_TABLE = {
     User: os.path.join(CSV_DIR, 'users.csv'),
