@@ -1,4 +1,5 @@
 import datetime
+import string
 from pathlib import Path
 
 
@@ -89,8 +90,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CONF_GEN = string.ascii_letters + string.digits
+MAIL_SUBJECT = 'Код подтверждения регистрации.'
+FROM_EMAIL = 'team18yambd@gmail.com'
 
-# Internationalization
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'team18yambd@gmail.com'
+EMAIL_HOST_PASSWORD = 'QwErTyZxCvB'
+EMAIL_PORT = 587
 
 LANGUAGE_CODE = 'en-us'
 
@@ -122,4 +130,4 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-AUTH_USER_MODEL = 'user.models.User'
+AUTH_USER_MODEL = 'user.User'

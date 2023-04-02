@@ -5,7 +5,7 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    """Класс настройки раздела пользователей."""
+    """Админка пользователей."""
 
     list_display = (
         'pk',
@@ -16,7 +16,7 @@ class UserAdmin(admin.ModelAdmin):
         'bio',
         'role'
     )
-    empty_value_display = 'значение отсутствует'
+    empty_value_display = 'отсутствует'
     list_editable = ('role',)
     list_filter = ('username',)
     search_fields = ('username', 'role')
