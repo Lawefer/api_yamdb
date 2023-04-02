@@ -7,56 +7,55 @@ class User(AbstractUser):
     """Класс пользователей."""
 
     class Roles(models.TextChoices):
-        user = 'user', 'Пользователь'
-        moderator = 'moderator', 'Модератор'
-        admin = 'admin', 'Админ'
+        user = "user", "Пользователь"
+        moderator = "moderator", "Модератор"
+        admin = "admin", "Админ"
 
     username = models.CharField(
         max_length=150,
-        verbose_name='Имя пользователя',
+        verbose_name="Имя пользователя",
         unique=True,
         db_index=True,
-        validators=[RegexValidator(
-            regex=r'^[\w.@+-]+$',
-            message='Имя пользователя содержит недопустимый символ.'
-        )]
+        validators=[
+            RegexValidator(
+                regex=r"^[\w.@+-]+$",
+                message="Имя пользователя содержит недопустимый символ.",
+            )
+        ],
     )
     email = models.EmailField(
         max_length=254,
-        verbose_name='email',
+        verbose_name="email",
         unique=True,
     )
     first_name = models.CharField(
         max_length=150,
-        verbose_name='Имя',
+        verbose_name="Имя",
         blank=True,
     )
     last_name = models.CharField(
         max_length=150,
-        verbose_name='Фамилия',
+        verbose_name="Фамилия",
         blank=True,
     )
     bio = models.TextField(
-        verbose_name='Биография',
+        verbose_name="Биография",
         blank=True,
     )
     role = models.CharField(
         max_length=20,
-        verbose_name='Роль',
+        verbose_name="Роль",
         choices=Roles.choices,
         default=Roles.user,
     )
     confirmation_code = models.CharField(
-        'Код авторизации',
-        max_length=20,
-        blank=True,
-        null=True
+        "Код авторизации", max_length=20, blank=True, null=True
     )
 
     class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
-        ordering = ('id',)
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
+        ordering = ("id",)
         constraints = [
             models.UniqueConstraint(
                 fields=["username", "email"], name="unique_username_email"

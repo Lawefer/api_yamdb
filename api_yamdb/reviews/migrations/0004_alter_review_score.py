@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('reviews', '0003_alter_review_score'),
+        ("reviews", "0003_alter_review_score"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='review',
-            name='score',
+            model_name="review",
+            name="score",
             field=models.IntegerField(),
         ),
     ]

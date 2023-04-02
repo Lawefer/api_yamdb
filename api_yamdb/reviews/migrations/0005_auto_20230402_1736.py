@@ -5,40 +5,50 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('reviews', '0004_alter_review_score'),
+        ("reviews", "0004_alter_review_score"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='category',
-            options={'verbose_name': 'Категория', 'verbose_name_plural': 'Категории'},
+            name="category",
+            options={
+                "verbose_name": "Категория",
+                "verbose_name_plural": "Категории",
+            },
         ),
         migrations.AlterModelOptions(
-            name='genre',
-            options={'verbose_name': 'Жанр', 'verbose_name_plural': 'Жанры'},
+            name="genre",
+            options={"verbose_name": "Жанр", "verbose_name_plural": "Жанры"},
         ),
         migrations.AlterModelOptions(
-            name='title',
-            options={'verbose_name': 'Произведение', 'verbose_name_plural': 'Произведения'},
+            name="title",
+            options={
+                "verbose_name": "Произведение",
+                "verbose_name_plural": "Произведения",
+            },
         ),
         migrations.AlterField(
-            model_name='category',
-            name='name',
+            model_name="category",
+            name="name",
             field=models.CharField(max_length=256),
         ),
         migrations.AlterField(
-            model_name='genre',
-            name='name',
+            model_name="genre",
+            name="name",
             field=models.CharField(max_length=256),
         ),
         migrations.AlterField(
-            model_name='title',
-            name='category',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='title', to='reviews.category'),
+            model_name="title",
+            name="category",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="title",
+                to="reviews.category",
+            ),
         ),
         migrations.DeleteModel(
-            name='Rating',
+            name="Rating",
         ),
     ]

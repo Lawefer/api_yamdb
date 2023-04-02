@@ -11,7 +11,7 @@ def confirmation_generator(username):
     """Генерирует код подтверждения."""
 
     user = get_object_or_404(User, username=username)
-    confirmation_code = ''.join(
+    confirmation_code = "".join(
         [random.choice(settings.CONF_GEN) for x in range(20)]
     )
     user.confirmation_code = confirmation_code
@@ -22,5 +22,5 @@ def confirmation_generator(username):
         confirmation_code,
         settings.FROM_EMAIL,
         [user.email],
-        fail_silently=False
+        fail_silently=False,
     )

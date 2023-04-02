@@ -4,7 +4,12 @@ from .models import Comment, Review, Title, Genre, Category
 
 
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ("pk", "text", "pub_date", "author",)
+    list_display = (
+        "pk",
+        "text",
+        "pub_date",
+        "author",
+    )
     search_fields = ("text",)
     list_filter = ("pub_date",)
     list_editable = ("text",)
@@ -18,16 +23,20 @@ class CommentAdmin(admin.ModelAdmin):
     list_editable = ("text",)
     empty_value_display = "-пусто-"
 
+
 class TitleAdmin(admin.ModelAdmin):
-    list_display = ("pk", "name", 'year', 'description', 'category')
-    search_fields = ('name',)
-    list_editable = ('name',)
+    list_display = ("pk", "name", "year", "description", "category")
+    search_fields = ("name",)
+    list_editable = ("name",)
+
 
 class GenreAdmin(admin.ModelAdmin):
-    list_display = ("pk", "name", 'slug')
+    list_display = ("pk", "name", "slug")
+
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("pk", "name",'slug')
+    list_display = ("pk", "name", "slug")
+
 
 admin.site.register(Title, TitleAdmin)
 admin.site.register(Review, ReviewAdmin)
