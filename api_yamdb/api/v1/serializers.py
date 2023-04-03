@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from reviews.models import Title, Category, Genre, Review, Comment
 from user.models import User
-from datetime import timezone
+from django.utils import timezone
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -93,20 +93,30 @@ class TitleCreateSerializer(serializers.ModelSerializer):
             )
         return year
 
-
-class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.CharField(source="author.username", read_only=True)
-
-    class Meta:
-        model = Comment
-        fields = ("id", "text", "author", "pub_date")
-        read_only_fields = ("author", "pub_date")
-
-
 class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.CharField(source="author.username", read_only=True)
 
     class Meta:
         model = Review
         fields = ("id", "text", "author", "score", "pub_date")
+        read_only_fields = ("author", "pub_date")
+
+    def validate(self, data):
+        title_id = self.context.get('view').kwargs.get('title_id')
+        author_id = self.context.get("request").user.id
+        print(self.context.get("request").user.is_moder)
+        if Review.objects.filter(title_id=title_id, author_id=author_id).exists():
+            raise serializers.ValidationError(
+                "Review to this title already exist"
+            )
+        return data
+        
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.CharField(source="author.username", read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ("id", "text", "author", 'pub_date')
         read_only_fields = ("author", "pub_date")

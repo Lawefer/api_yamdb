@@ -1,25 +1,25 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, status
 from rest_framework.decorators import action
 from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
                                    ListModelMixin,)
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
-
-from django_filters.rest_framework import DjangoFilterBackend
 
 from django.shortcuts import get_object_or_404
 
-from reviews.models import Category, Genre, Title, Review, Comment
+from reviews.models import Category, Comment, Genre, Review, Title
 from user.conf_mail import confirmation_generator
 from user.models import User
 
 from .permissions import AdminOnly, IsAdminOrReadOnly, IsStafOrReadOnly
-from .serializers import (CategorySerializer, GenreSerializer,
-                          ObtainTokenSerializer, RegistrationSerializer,
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, ObtainTokenSerializer,
+                          RegistrationSerializer, ReviewSerializer,
                           TitleCreateSerializer, TitleListSerializer,
-                          UserSerializer, ReviewSerializer, CommentSerializer)
+                          UserSerializer,)
 
 
 class ListCreateDestroyViewSet(
@@ -128,6 +128,11 @@ class ReviewViewSet(ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = (IsStafOrReadOnly,)
 
+    def perform_create(self, serializer):
+        title_id = self.kwargs.get("title_id")
+        title_object = Title.objects.get(id=title_id)
+        serializer.save(author=self.request.user, title=title_object)
+
 
 class CommentViewSet(ModelViewSet):
     queryset = Comment.objects.select_related("review").select_related(
@@ -135,3 +140,8 @@ class CommentViewSet(ModelViewSet):
     )
     serializer_class = CommentSerializer
     permission_classes = (IsStafOrReadOnly,)
+
+    def perform_create(self, serializer):
+        review_id = self.kwargs.get("review_id")
+        review_object = Review.objects.get(id=review_id)
+        serializer.save(author=self.request.user, review=review_object)

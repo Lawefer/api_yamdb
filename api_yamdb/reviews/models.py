@@ -100,10 +100,14 @@ class Review(models.Model):
         verbose_name_plural = "Отзывы"
         verbose_name = "Отзыв"
         ordering = ["-pub_date"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["author", "title"], name="unique_author_title"
+            ),
+        ]
 
     def __str__(self):
         return self.text
-
 
 class Comment(models.Model):
     review = models.ForeignKey(
