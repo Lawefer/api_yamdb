@@ -1,11 +1,11 @@
 from django.contrib import admin
 
-from user.models import User
+from .models import User
 
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    """Админка пользователей."""
+    """Админка пользователя."""
 
     list_display = (
         "pk",
