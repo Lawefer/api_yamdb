@@ -1,40 +1,6 @@
 from rest_framework import serializers
 from reviews.models import Title, Category, Genre, Review, Comment
-from user.models import User
 from django.utils import timezone
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = (
-            "username",
-            "email",
-            "first_name",
-            "last_name",
-            "bio",
-            "role",
-        )
-
-
-class RegistrationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ("email", "username")
-
-    def validate(self, data):
-        if data.get("username") != "me":
-            return data
-        raise serializers.ValidationError("Некоректное имя пользователя.")
-
-
-class ObtainTokenSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(max_length=150)
-    confirmation_code = serializers.CharField(max_length=20)
-
-    class Meta:
-        model = User
-        fields = ("username", "confirmation_code")
 
 
 class CategorySerializer(serializers.ModelSerializer):
