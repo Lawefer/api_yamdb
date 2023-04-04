@@ -46,8 +46,8 @@ class Title(models.Model):
     name = models.CharField(max_length=200)
     year = models.IntegerField()
     description = models.TextField()
-    genre = models.ManyToManyField(
-        Genre, related_name="titles", blank=True,
+    genres = models.ManyToManyField(
+        Genre, through='GenreTitle', related_name="titles", blank=True,
     )
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, null=True, related_name="title"
@@ -78,7 +78,6 @@ class GenreTitle(models.Model):
     class Meta:
         verbose_name = 'Соответствие жанра и произведения'
         verbose_name_plural = 'Таблица соответствия жанров и произведений'
-        ordering = ('id',)
 
     def __str__(self):
         return f'{self.title} принадлежит жанру/ам {self.genre}'

@@ -17,7 +17,7 @@ Content-Type: application/json
 
 {
     "email": "kritohanzo@fbi.ac",
-    "username": "kritohanzo",
+    "username": "kritohanzo"
 }
 
 ###
@@ -42,3 +42,21 @@ GET http://127.0.0.1:8000/api/v1/titles/1/reviews/
 ###
 
 GET http://127.0.0.1:8000/api/v1/titles/1/reviews/1/comments/
+
+###
+
+GET http://127.0.0.1:8000/api/v1/titles/
+
+###
+
+GET http://127.0.0.1:8000/api/v1/titles/
+
+###
+
+POST http://127.0.0.1:8000/api/v1/auth/token/
+Content-Type: application/json
+
+{
+    "username": "kritohanzo",
+    "confirmation_code": "123123"
+}

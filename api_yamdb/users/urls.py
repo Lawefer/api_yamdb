@@ -11,7 +11,7 @@ users_router = DefaultRouter()
 users_router.register(r'users', UserViewSet, basename='users')
 
 urlpatterns = [
-    path('api/v1/auth/token/', get_jwt_token, name='token'),
-    path('api/v1/auth/signup/', signup),
-    path('api/v1/', include(users_router.urls)),
+    path('auth/token/', get_jwt_token, name='token'),
+    path('auth/signup/', signup),
+    path('', include(users_router.urls)),
 ]

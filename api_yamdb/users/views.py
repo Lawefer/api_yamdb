@@ -84,10 +84,11 @@ def signup(request):
             )
     user, code_created = User.objects.get_or_create(
         email=email,
-        username=username
+        username=username,
     )
     confirmation_code = default_token_generator.make_token(user)
     user.confirmation_code = confirmation_code
+    user.save()
     send_mail(
         'Confirmation code',
         f'Ваш код подтверждения {confirmation_code}',

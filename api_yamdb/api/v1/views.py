@@ -1,14 +1,13 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from django_filters.rest_framework import DjangoFilterBackend
+from django.shortcuts import get_object_or_404
+
 from rest_framework.mixins import (CreateModelMixin, DestroyModelMixin,
                                    ListModelMixin,)
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
-
-from reviews.models import Category, Comment, Genre, Review, Title
+from rest_framework.filters import SearchFilter
 from reviews.models import Category, Comment, Genre, Review, Title
 
-from .permissions import IsAdminOrReadOnly, IsStafOrReadOnly
+from .permissions import IsStafOrReadOnly, AdminOnly, IsUserOrAdmin
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReviewSerializer,
                           TitleCreateSerializer, TitleListSerializer
@@ -24,7 +23,7 @@ class ListCreateDestroyViewSet(
 class CategoryViewSet(ListCreateDestroyViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (AdminOnly,)
     filter_backends = (SearchFilter, )
     search_fields = ('name', )
     lookup_field = 'slug'
@@ -34,7 +33,7 @@ class GenreViewSet(CreateModelMixin, ListModelMixin,
                    DestroyModelMixin, GenericViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (AdminOnly,)
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_fields = ['name']
     search_fields = ['name']
@@ -43,9 +42,9 @@ class GenreViewSet(CreateModelMixin, ListModelMixin,
 
 class TitleViewSet(ModelViewSet):
     queryset = Title.objects.all()
-    permission_classes = (IsAdminOrReadOnly,)
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['category__slug', 'genre__slug', 'name', 'year']
+    permission_classes = (IsUserOrAdmin,)
+    filterset_fields = ['category__slug', 'genres__slug', 'name', 'year']
 
     def get_serializer_class(self):
         if self.request.method in (
@@ -62,6 +61,11 @@ class ReviewViewSet(ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = (IsStafOrReadOnly,)
 
+    def get_queryset(self):
+        title = get_object_or_404(Title, id=self.kwargs.get("title_id"))
+        queryset = title.reviews.all()
+        return queryset
+    
     def perform_create(self, serializer):
         title_id = self.kwargs.get("title_id")
         title_object = Title.objects.get(id=title_id)
