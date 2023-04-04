@@ -1,8 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
-from django.core.exceptions import ValidationError
-from user.models import User
+
+from users.models import User
 
 
 def validate_release_year(year):

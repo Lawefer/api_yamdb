@@ -1,6 +1,5 @@
-import os
 import datetime
-import string
+import os
 from pathlib import Path
 
 
@@ -29,7 +28,7 @@ INSTALLED_APPS = [
     'django_filters',
     'api.apps.ApiConfig',
     'reviews.apps.ReviewsConfig',
-    'user.apps.UserConfig',
+    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -91,16 +90,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-CONF_GEN = string.ascii_letters + string.digits
-MAIL_SUBJECT = 'Код подтверждения регистрации.'
-FROM_EMAIL = 'team18yambd@gmail.com'
-
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'team18yambd@gmail.com'
-EMAIL_HOST_PASSWORD = 'QwErTyZxCvB'
-EMAIL_PORT = 587
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -132,4 +121,8 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-AUTH_USER_MODEL = 'user.User'
+AUTH_USER_MODEL = 'users.User'
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+SENDING_EMAIL = 'noreply@example.com'
