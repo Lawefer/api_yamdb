@@ -1,16 +1,15 @@
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
 from users.models import User
 
 
-def validate_release_year(year):
-    if year and year > timezone.now().year:
-        raise ValidationError(
-            "Год выпуска не может быть больше текущего года."
-        )
-    return year
+#def validate_release_year(year):
+   # if year and year > timezone.now().year:
+  #      raise ValidationError(
+  #          "Год выпуска не может быть больше текущего года."
+  #      )
+  #  return year
 
 
 class Category(models.Model):
@@ -45,7 +44,7 @@ class Title(models.Model):
     """Модель Произведения."""
 
     name = models.CharField(max_length=200)
-    year = models.IntegerField(validators=[validate_release_year])
+    year = models.IntegerField()
     description = models.TextField()
     genre = models.ManyToManyField(
         Genre, related_name="titles", blank=True,
