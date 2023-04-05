@@ -51,7 +51,7 @@ class UserViewSet(viewsets.ModelViewSet):
 @api_view(['POST', ])
 @permission_classes([AllowAny])
 def signup(request):
-    """Регистрации пользователя."""
+    """Регистрация пользователя."""
 
     serializer = CreateUserSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -67,7 +67,7 @@ def signup(request):
             and not User.objects.filter(username=username).exists()
         ):
             return Response(
-                {'message': 'Пользователь с таким email уже существует'},
+                {'message': 'Пользователь с таким email уже существует.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         elif (
@@ -75,11 +75,11 @@ def signup(request):
             and User.objects.filter(username=username).exists()
         ):
             return Response(
-                {'message': 'Пользователь с таким username уже существует'},
+                {'message': 'Пользователь с таким username уже существует.'},
                 status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(
-                {'message': 'Пользователь уже зарегистрирован'},
+                {'message': 'Пользователь уже зарегистрирован.'},
                 status=status.HTTP_200_OK
             )
     user, code_created = User.objects.get_or_create(
