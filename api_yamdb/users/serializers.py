@@ -11,8 +11,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'username',
-                  'bio', 'email', 'role', ]
+        fields = [
+            "first_name",
+            "last_name",
+            "username",
+            "bio",
+            "email",
+            "role",
+        ]
 
 
 class CreateUserSerializer(serializers.Serializer):
@@ -25,15 +31,16 @@ class CreateUserSerializer(serializers.Serializer):
     username = serializers.RegexField(
         required=True,
         max_length=150,
-        regex=r'^[\w.@+-]+\Z',
+        regex=r"^[\w.@+-]+\Z",
     )
 
     def validate(self, data):
         """Проверка имя пользователя"""
 
-        if data['username'] == 'me':
+        if data["username"] == "me":
             raise serializers.ValidationError(
-                {'Выберете другое имя пользователя'})
+                {"Выберете другое имя пользователя"}
+            )
         return data
 
 
@@ -46,9 +53,11 @@ class AccessTokenSerializer(serializers.Serializer):
     def validate(self, data):
         """Проверка кода подтверждения"""
 
-        user = get_object_or_404(User, username=data['username'])
-        if not default_token_generator.check_token(user,
-                                                   data['confirmation_code']):
+        user = get_object_or_404(User, username=data["username"])
+        if not default_token_generator.check_token(
+            user, data["confirmation_code"]
+        ):
             raise serializers.ValidationError(
-                {'confirmation_code': 'Ошибка при вводе кода подтверждения'})
+                {"confirmation_code": "Ошибка при вводе кода подтверждения"}
+            )
         return data

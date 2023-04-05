@@ -2,14 +2,14 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-USER = 'user'
-MODERATOR = 'moderator'
-ADMIN = 'admin'
+USER = "user"
+MODERATOR = "moderator"
+ADMIN = "admin"
 
 ROLE_CHOICES = [
-    (USER, 'user'),
-    (MODERATOR, 'moderator'),
-    (ADMIN, 'admin'),
+    (USER, "user"),
+    (MODERATOR, "moderator"),
+    (ADMIN, "admin"),
 ]
 
 
@@ -20,23 +20,23 @@ class User(AbstractUser):
         unique=True,
     )
     bio = models.TextField(
-        verbose_name='Биография',
+        verbose_name="Биография",
         blank=True,
         null=True,
     )
     role = models.CharField(
-        verbose_name='Роль',
+        verbose_name="Роль",
         max_length=100,
         choices=ROLE_CHOICES,
-        default='user',
+        default="user",
     )
     confirmation_code = models.CharField(
-        verbose_name='Код подтверждения',
+        verbose_name="Код подтверждения",
         max_length=150,
         editable=False,
         null=True,
         blank=True,
-        unique=False
+        unique=False,
     )
 
     @property
@@ -47,9 +47,7 @@ class User(AbstractUser):
     @property
     def is_admin(self):
         """Проверяемм наличие прав администратора."""
-        return any(
-            [self.role == ADMIN, self.is_superuser, self.is_staff]
-        )
+        return any([self.role == ADMIN, self.is_superuser, self.is_staff])
 
     @property
     def is_moderator(self):
@@ -58,13 +56,12 @@ class User(AbstractUser):
 
 
 class Meta:
-    verbose_name_plural = 'Пользователи'
-    verbose_name = 'Пользователь'
-    ordering = ('username',)
+    verbose_name_plural = "Пользователи"
+    verbose_name = "Пользователь"
+    ordering = ("username",)
     constraints = [
         models.UniqueConstraint(
-            fields=['username', 'email'],
-            name='unique_username_email'
+            fields=["username", "email"], name="unique_username_email"
         )
     ]
 

@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from django.db.models import Avg
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from reviews.models import Category, Comment, Genre, Review, Title
@@ -24,10 +26,23 @@ class TitleListSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True, read_only=True)
     name = serializers.CharField(required=False)
     year = serializers.IntegerField(required=False)
+    rating = serializers.SerializerMethodField()
 
     class Meta:
         model = Title
-        fields = ("id", "name", "year", "description", "genre", "category")
+        fields = (
+            "id",
+            "name",
+            "year",
+            "rating",
+            "description",
+            "genre",
+            "category",
+        )
+
+    def get_rating(self, obj):
+        rating = obj.reviews.aggregate(Avg("score"))["score__avg"]
+        return rating
 
 
 class TitleCreateSerializer(serializers.ModelSerializer):
@@ -63,18 +78,26 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = ("id", "text", "author", "score", "pub_date")
         read_only_fields = ("author", "pub_date")
 
+    def validate_score(self, value):
+        if value < 0 or value > 10:
+            raise serializers.ValidationError("Score must be between 0 and 10")
+        return value
+
     def validate(self, data):
-        request = self.context['request']
-        title_id = self.context.get('view').kwargs.get('title_id')
+        request = self.context["request"]
+        title_id = self.context.get("view").kwargs.get("title_id")
         author_id = self.context.get("request").user.id
 
         if (
             request.method == "POST"
-            and Review.objects.filter(title_id=title_id, author_id=author_id
-                                      ).exists()):
+            and Review.objects.filter(
+                title_id=title_id, author_id=author_id
+            ).exists()
+        ):
             raise serializers.ValidationError(
                 "Review to this title already exist"
             )
+        get_object_or_404(Title, id=title_id)
         return data
 
 
@@ -83,5 +106,10 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ("id", "text", "author", 'pub_date')
+        fields = ("id", "text", "author", "pub_date")
         read_only_fields = ("author", "pub_date")
+
+    def validate(self, data):
+        title_id = self.context.get("view").kwargs.get("review_id")
+        get_object_or_404(Review, id=title_id)
+        return data
