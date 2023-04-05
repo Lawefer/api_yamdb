@@ -1,9 +1,8 @@
 from http import HTTPStatus
 
 import pytest
-
 from tests.utils import (check_pagination, check_permissions,
-                         create_categories, create_genre, create_titles)
+                         create_categories, create_genre, create_titles,)
 
 
 @pytest.mark.django_db(transaction=True)
