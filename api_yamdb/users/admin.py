@@ -1,11 +1,11 @@
 from django.contrib import admin
 
-from user.models import User
+from .models import User
 
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    """Админка пользователей."""
+    """Админка пользователя."""
 
     list_display = (
         "pk",
@@ -16,7 +16,7 @@ class UserAdmin(admin.ModelAdmin):
         "bio",
         "role",
     )
-    empty_value_display = 'отсутствует'
-    list_editable = ('role',)
-    list_filter = ('username',)
-    search_fields = ('username', 'role')
+    empty_value_display = "отсутствует"
+    list_editable = ("role",)
+    list_filter = ("username",)
+    search_fields = ("username", "role")

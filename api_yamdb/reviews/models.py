@@ -1,16 +1,6 @@
-from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils import timezone
-from django.core.exceptions import ValidationError
-from user.models import User
 
-
-def validate_release_year(year):
-    if year and year > timezone.now().year:
-        raise ValidationError(
-            "Год выпуска не может быть больше текущего года."
-        )
-    return year
+from users.models import User
 
 
 class Category(models.Model):
@@ -22,6 +12,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
+        ordering = ["name"]
 
     def __str__(self):
         return f"{self.name}"
@@ -36,6 +27,7 @@ class Genre(models.Model):
     class Meta:
         verbose_name = "Жанр"
         verbose_name_plural = "Жанры"
+        ordering = ["name"]
 
     def __str__(self):
         return f"{self.name}"
@@ -45,9 +37,14 @@ class Title(models.Model):
     """Модель Произведения."""
 
     name = models.CharField(max_length=200)
-    year = models.IntegerField(validators=[validate_release_year])
+    year = models.IntegerField()
     description = models.TextField()
-    genre = models.ManyToManyField(Genre)
+    genre = models.ManyToManyField(
+        Genre,
+        through="GenreTitle",
+        related_name="titles",
+        blank=True,
+    )
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, null=True, related_name="title"
     )
@@ -55,9 +52,28 @@ class Title(models.Model):
     class Meta:
         verbose_name = "Произведение"
         verbose_name_plural = "Произведения"
+        ordering = ["name"]
 
     def __str__(self):
         return f"{self.name}"
+
+
+class GenreTitle(models.Model):
+    """Вспомогательный класс, связывающий жанры и произведения."""
+
+    genre = models.ForeignKey(
+        Genre, on_delete=models.CASCADE, verbose_name="Жанр"
+    )
+    title = models.ForeignKey(
+        Title, on_delete=models.CASCADE, verbose_name="произведение"
+    )
+
+    class Meta:
+        verbose_name = "Соответствие жанра и произведения"
+        verbose_name_plural = "Таблица соответствия жанров и произведений"
+
+    def __str__(self):
+        return f"{self.title} принадлежит жанру/ам {self.genre}"
 
 
 class Review(models.Model):
@@ -75,6 +91,11 @@ class Review(models.Model):
         verbose_name_plural = "Отзывы"
         verbose_name = "Отзыв"
         ordering = ["-pub_date"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["author", "title"], name="unique_author_title"
+            ),
+        ]
 
     def __str__(self):
         return self.text
