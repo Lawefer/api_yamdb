@@ -49,10 +49,21 @@ GET http://127.0.0.1:8000/api/v1/titles/
 
 ###
 
-GET http://127.0.0.1:8000/api/v1/titles/
+GET http://127.0.0.1:8000/api/v1/titles/?year=1957
 
 ###
 
+GET http://127.0.0.1:8000/api/v1/titles/?genre=thril
+
+###
+
+GET http://127.0.0.1:8000/api/v1/titles/?category=boo
+
+###
+
+GET http://127.0.0.1:8000/api/v1/titles/?name=Криминаль
+
+###
 POST http://127.0.0.1:8000/api/v1/auth/token/
 Content-Type: application/json
 
