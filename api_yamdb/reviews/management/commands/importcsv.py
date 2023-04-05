@@ -1,7 +1,7 @@
 import csv
 import os
 
-from user.models import User
+from users.models import User
 
 from django.core.management import BaseCommand
 from django.db import IntegrityError
