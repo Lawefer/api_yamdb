@@ -1,15 +1,6 @@
 from django.db import models
-from django.utils import timezone
 
 from users.models import User
-
-
-#def validate_release_year(year):
-   # if year and year > timezone.now().year:
-  #      raise ValidationError(
-  #          "Год выпуска не может быть больше текущего года."
-  #      )
-  #  return year
 
 
 class Category(models.Model):
@@ -21,6 +12,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
+        ordering = ["name"]
 
     def __str__(self):
         return f"{self.name}"
@@ -35,6 +27,7 @@ class Genre(models.Model):
     class Meta:
         verbose_name = "Жанр"
         verbose_name_plural = "Жанры"
+        ordering = ["name"]
 
     def __str__(self):
         return f"{self.name}"
@@ -56,6 +49,7 @@ class Title(models.Model):
     class Meta:
         verbose_name = "Произведение"
         verbose_name_plural = "Произведения"
+        ordering = ["name"]
 
     def __str__(self):
         return f"{self.name}"
@@ -106,6 +100,7 @@ class Review(models.Model):
 
     def __str__(self):
         return self.text
+
 
 class Comment(models.Model):
     review = models.ForeignKey(

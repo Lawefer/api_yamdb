@@ -28,7 +28,6 @@ class TitleListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Title
         fields = ("id", "name", "year", "description", "genre", "category")
-        
 
 
 class TitleCreateSerializer(serializers.ModelSerializer):
@@ -55,6 +54,7 @@ class TitleCreateSerializer(serializers.ModelSerializer):
             )
         return year
 
+
 class ReviewSerializer(serializers.ModelSerializer):
     author = serializers.CharField(source="author.username", read_only=True)
 
@@ -64,14 +64,18 @@ class ReviewSerializer(serializers.ModelSerializer):
         read_only_fields = ("author", "pub_date")
 
     def validate(self, data):
+        request = self.context['request']
         title_id = self.context.get('view').kwargs.get('title_id')
         author_id = self.context.get("request").user.id
-        if Review.objects.filter(title_id=title_id, author_id=author_id).exists():
+
+        if (
+            request.method == "POST"
+            and Review.objects.filter(title_id=title_id, author_id=author_id
+                                      ).exists()):
             raise serializers.ValidationError(
                 "Review to this title already exist"
             )
         return data
-        
 
 
 class CommentSerializer(serializers.ModelSerializer):

@@ -11,8 +11,9 @@ from .permissions import IsStafOrReadOnly, AdminOnly, IsUserOrAdmin
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReviewSerializer,
                           TitleCreateSerializer, TitleListSerializer
-)
+                          )
 from .filters import TitleFilter
+
 
 class ListCreateDestroyViewSet(
     ListModelMixin, CreateModelMixin, DestroyModelMixin, GenericViewSet
@@ -27,7 +28,7 @@ class CategoryViewSet(ListCreateDestroyViewSet):
     filter_backends = (SearchFilter, )
     search_fields = ('name', )
     lookup_field = 'slug'
-    
+
 
 class GenreViewSet(CreateModelMixin, ListModelMixin,
                    DestroyModelMixin, GenericViewSet):
@@ -66,7 +67,7 @@ class ReviewViewSet(ModelViewSet):
         title = get_object_or_404(Title, id=self.kwargs.get("title_id"))
         queryset = title.reviews.all()
         return queryset
-    
+
     def perform_create(self, serializer):
         title_id = self.kwargs.get("title_id")
         title_object = Title.objects.get(id=title_id)
