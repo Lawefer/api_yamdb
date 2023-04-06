@@ -4,6 +4,8 @@ from reviews.models import Title
 
 
 class GenreFilter(Filter):
+    """Фильтр для поиска по жанрам произведений."""
+
     def filter(self, qs, value):
         if not value:
             return qs
@@ -11,6 +13,8 @@ class GenreFilter(Filter):
 
 
 class CategoryFilter(Filter):
+    """Фильтр для поиска по категориям произведений."""
+
     def filter(self, qs, value):
         if not value:
             return qs
@@ -18,6 +22,8 @@ class CategoryFilter(Filter):
 
 
 class TitleNameFilter(Filter):
+    """Фильтр для поиска по названиям произведений."""
+
     def filter(self, qs, value):
         if not value:
             return qs
@@ -25,6 +31,8 @@ class TitleNameFilter(Filter):
 
 
 class TitleYearFilter(Filter):
+    """Фильтр для поиска по году выпуска произведения."""
+
     def filter(self, qs, value):
         if not value:
             return qs
@@ -32,6 +40,11 @@ class TitleYearFilter(Filter):
 
 
 class TitleFilter(FilterSet):
+    """Основной класс кастомного фильтра.
+
+    Фильтрация по жанру, категории, названию или году выпуска.
+    """
+
     genre = GenreFilter(field_name="genre")
     category = CategoryFilter(field_name="category")
     name = TitleNameFilter(field_name="name")

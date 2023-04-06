@@ -1,32 +1,92 @@
 from rest_framework import serializers
 
-from django.db.models import Avg
+from django.contrib.auth.tokens import default_token_generator
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from reviews.models import Category, Comment, Genre, Review, Title
+from users.models import User
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """Сериалайзер для класса пользователь."""
+
+    class Meta:
+        model = User
+        fields = [
+            "first_name",
+            "last_name",
+            "username",
+            "bio",
+            "email",
+            "role",
+        ]
+
+
+class CreateUserSerializer(serializers.Serializer):
+    """Сериалайзер для регистрации пользователей."""
+
+    email = serializers.EmailField(
+        required=True,
+        max_length=254,
+    )
+    username = serializers.RegexField(
+        required=True,
+        max_length=150,
+        regex=r"^[\w.@+-]+\Z",
+    )
+
+    def validate(self, data):
+        """Проверка имя пользователя."""
+        if data["username"] == "me":
+            raise serializers.ValidationError(
+                {"Выберете другое имя пользователя"}
+            )
+        return data
+
+
+class AccessTokenSerializer(serializers.Serializer):
+    """Сериалайзер для получения JWT-токена."""
+
+    username = serializers.CharField(required=True)
+    confirmation_code = serializers.CharField(required=True)
+
+    def validate(self, data):
+        """Проверка кода подтверждения."""
+        user = get_object_or_404(User, username=data["username"])
+        if not default_token_generator.check_token(
+            user, data["confirmation_code"]
+        ):
+            raise serializers.ValidationError(
+                {"confirmation_code": "Ошибка при вводе кода подтверждения"}
+            )
+        return data
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    """Сериализатор категорий."""
+
     class Meta:
         model = Category
         fields = ("name", "slug")
 
 
 class GenreSerializer(serializers.ModelSerializer):
+    """Сериализатор жанров."""
+
     class Meta:
         model = Genre
         fields = ("name", "slug")
 
 
 class TitleListSerializer(serializers.ModelSerializer):
-    """Показ произведений"""
+    """Сериализатор произведений при SAFE запросе."""
 
     category = CategorySerializer(read_only=True)
     genre = GenreSerializer(many=True, read_only=True)
     name = serializers.CharField(required=False)
     year = serializers.IntegerField(required=False)
-    rating = serializers.SerializerMethodField()
+    rating = serializers.IntegerField()
 
     class Meta:
         model = Title
@@ -40,12 +100,10 @@ class TitleListSerializer(serializers.ModelSerializer):
             "category",
         )
 
-    def get_rating(self, obj):
-        rating = obj.reviews.aggregate(Avg("score"))["score__avg"]
-        return rating
-
 
 class TitleCreateSerializer(serializers.ModelSerializer):
+    """Сериализатор произведений при не SAFE запросе."""
+
     category = serializers.SlugRelatedField(
         slug_field="slug", queryset=Category.objects.all(), required=True
     )
@@ -56,7 +114,7 @@ class TitleCreateSerializer(serializers.ModelSerializer):
         required=True,
     )
     name = serializers.CharField(max_length=256, required=True)
-    year = serializers.IntegerField(required=True)
+    year = serializers.IntegerField()
 
     class Meta:
         model = Title
@@ -71,6 +129,8 @@ class TitleCreateSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    """Сериализатор отзывов на произведения."""
+
     author = serializers.CharField(source="author.username", read_only=True)
 
     class Meta:
@@ -102,6 +162,8 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    """Сериализатор комментариев на отзывы."""
+
     author = serializers.CharField(source="author.username", read_only=True)
 
     class Meta:

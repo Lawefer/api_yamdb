@@ -1,10 +1,12 @@
 import csv
+import logging
 import os
 
 from django.core.management import BaseCommand
 from django.db import IntegrityError
+from django.db.models import Model
 
-from api_yamdb.settings import CSV_FILES_DIR
+from api_yamdb.settings import BASE_DIR, CSV_FILES_DIR
 from reviews.models import Category, Comment, Genre, GenreTitle, Review, Title
 from users.models import User
 
@@ -28,7 +30,7 @@ FIELDS = {
 }
 
 
-def open_csv_file(file_name):
+def open_csv_file(file_name: str):
     """Менеджер контекста для открытия csv-файлов."""
     csv_file = file_name + ".csv"
     csv_path = os.path.join(CSV_FILES_DIR, csv_file)
@@ -36,11 +38,11 @@ def open_csv_file(file_name):
         with open(csv_path, encoding="utf-8") as file:
             return list(csv.reader(file))
     except FileNotFoundError:
-        print(f"Файл {csv_file} не найден.")
+        logging.error(f"Файл {csv_file} не найден.")
         return
 
 
-def change_foreign_values(data_csv):
+def change_foreign_values(data_csv: dict):
     """Изменяет значения."""
     data_csv_copy = data_csv.copy()
     for field_key, field_value in data_csv.items():
@@ -52,7 +54,7 @@ def change_foreign_values(data_csv):
     return data_csv_copy
 
 
-def load_csv(file_name, class_name):
+def load_csv(file_name: str, class_name: type[Model]):
     """Осуществляет загрузку csv-файлов."""
     table_not_loaded = f"Таблица {class_name.__qualname__} не загружена."
     table_loaded = f"Таблица {class_name.__qualname__} загружена."
@@ -65,17 +67,25 @@ def load_csv(file_name, class_name):
             table = class_name(**data_csv)
             table.save()
         except (ValueError, IntegrityError) as error:
-            print(
+            logging.error(
                 f"Ошибка в загружаемых данных. {error}. " f"{table_not_loaded}"
             )
             break
-    print(table_loaded)
+    logging.info(table_loaded)
 
 
 class Command(BaseCommand):
     """Класс загрузки тестовой базы данных."""
 
     def handle(self, *args, **options):
+        logging.basicConfig(
+            filename=os.path.join(
+                BASE_DIR, "reviews", "management", "reviews.log"
+            ),
+            encoding="utf-8",
+            format="%(asctime)s [%(levelname)s] - %(message)s",
+            level=logging.DEBUG,
+        )
         for key, value in FILES_CLASSES.items():
-            print(f"Загрузка таблицы {value.__qualname__}")
+            logging.debug(f"Загрузка таблицы {value.__qualname__}")
             load_csv(key, value)

@@ -16,8 +16,8 @@ POST http://127.0.0.1:8000/api/v1/auth/signup/
 Content-Type: application/json
 
 {
-    "email": "kritohanzo@fbi.ac",
-    "username": "kritohanzo"
+    "email": "example@example.ru",
+    "username": "arbuz"
 }
 
 ###
@@ -64,14 +64,19 @@ GET http://127.0.0.1:8000/api/v1/titles/?category=boo
 GET http://127.0.0.1:8000/api/v1/titles/?name=Криминаль
 
 ###
+
 POST http://127.0.0.1:8000/api/v1/auth/token/
 Content-Type: application/json
 
 {
-    "username": "kritohanzo",
+    "username": "arbuz",
     "confirmation_code": "123123"
 }
 
 ###
 
 GET http://127.0.0.1:8000/api/v1/titles/5/reviews/6/comments/
+
+###
+
+GET http://127.0.0.1:8000/api/v1/genres

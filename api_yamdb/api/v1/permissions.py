@@ -2,9 +2,9 @@ from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 
 class IsAdminOrReadOnly(BasePermission):
-    """Дает полный доступ админу.
+    """Дает полный доступ только админу.
 
-    Для остальных доступ только для безопасный запросов.
+    Для остальных доступа нет.
     """
 
     def has_permission(self, request, view):
@@ -15,8 +15,11 @@ class IsAdminOrReadOnly(BasePermission):
         )
 
 
-class AdminOnly(BasePermission):
-    """Дает полный доступ админу."""
+class AdminOnlyOrReadOnly(BasePermission):
+    """Дает полный доступ админу.
+
+    Для остальных только доступ к безопасным запросам.
+    """
 
     def has_permission(self, request, view):
         return request.method in SAFE_METHODS or (
@@ -42,13 +45,4 @@ class IsStafOrReadOnly(BasePermission):
             or obj.author == request.user
             or request.user.is_moderator
             or request.user.is_admin
-        )
-
-
-class IsUserOrAdmin(BasePermission):
-    def has_permission(self, request, view):
-        return (
-            request.method in SAFE_METHODS
-            or request.user.is_authenticated
-            and request.user.is_admin
         )
