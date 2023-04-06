@@ -15,7 +15,7 @@ class Category(models.Model):
         ordering = ["name"]
 
     def __str__(self):
-        return f"{self.name}"
+        return self.name
 
 
 class Genre(models.Model):
@@ -30,7 +30,7 @@ class Genre(models.Model):
         ordering = ["name"]
 
     def __str__(self):
-        return f"{self.name}"
+        return self.name
 
 
 class Title(models.Model):
@@ -55,7 +55,7 @@ class Title(models.Model):
         ordering = ["name"]
 
     def __str__(self):
-        return f"{self.name}"
+        return self.name
 
 
 class GenreTitle(models.Model):
@@ -77,6 +77,8 @@ class GenreTitle(models.Model):
 
 
 class Review(models.Model):
+    """Модель отзывов пользователей на произведения."""
+
     title = models.ForeignKey(
         Title, on_delete=models.CASCADE, related_name="reviews"
     )
@@ -102,6 +104,8 @@ class Review(models.Model):
 
 
 class Comment(models.Model):
+    """Модель комментариев пользователей на отзывы."""
+
     review = models.ForeignKey(
         Review, on_delete=models.CASCADE, related_name="comments"
     )
